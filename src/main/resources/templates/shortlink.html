@@ -98,34 +98,13 @@
 	}
 </style>
     <script type="text/javascript">
-$(document).ready(function(){
-	$('[data-toggle="tooltip"]').tooltip();
-	var actions = $("table td:last-child").html();
-	// Append table with add row form on add new button click
-    $(".add-new").click(function(){
-		$(this).attr("disabled", "disabled");
-		var index = $("table tbody tr:last-child").index();
-        var row = '<tr>' +
-            '<td><input type="text" class="form-control" name="name" id="name"></td>' +
-            '<td><input type="text" class="form-control" name="department" id="department"></td>' +
-            '<td><input type="text" class="form-control" name="phone" id="phone"></td>' +
-			'<td>' + actions + '</td>' +
-        '</tr>';
-    	$("table").append(row);
-		$("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
-        $('[data-toggle="tooltip"]').tooltip();
-    });
 
-
-});
-function showEdit(id) {
-    var url = '/creditcard/edit/' + id;
+function redirect(id) {
+    alert(id);
+    var url = '/shortlink/url/' + id;
     $("#edit-block").load(url);
 }
-function showAdd() {
-    var url = '/creditcard/add';
-    $("#edit-block").load(url);
-}
+
 </script>
 </head>
 <body>
@@ -133,57 +112,35 @@ function showAdd() {
     <div class="table-wrapper">
         <div class="table-title">
             <div class="row">
-                <div class="col-sm-8"><h2>Creditcard</h2></div>
-                <input type="submit" value="Add New" class="btn btn-info " th:onclick="'javascript:showAdd();'"/>
+                <div class="col-sm-8"><h2>Get an alias for your service</h2></div>
             </div>
         </div>
         <div class="table-title">
-            <form action="#" th:action="@{/creditcard/search}" th:object="${cardNumber}" method="get">
+            <form action="#" th:action="@{/shortlink/alias}" th:object="${link}" method="get">
                 <div class="row">
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" name="number" placeholder="Number"  th:field="*{number}">
+                    <div class="form-group">
+                        <label>Inform the URL</label>
+                        <input type="text" class="form-control" name="link" placeholder="Link"  th:field="*{url}">
+                        <input type="submit" value="Get alias" />
                     </div>
-                    <div class="col-sm-4">
-                        <input type="submit" value="Search" />
                     </div>
-                </div>
-            </form>
-        </div>
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>Name holder</th>
-                <th>Number</th>
-                <th>Expiry date</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="creditcard : ${creditcardLst}">
-                <td><span th:text="${creditcard.nameHolder}"/><"/td>
-                <td><span th:text="${creditcard.number}"/></td>
-                <td><span th:text="${creditcard.expiryDate}"/></td>
-                <td>
+                    <div class="form-group">
+                        <label>Alias result:</label>
+                        <span th:text="${alias_response}"/>
+                    </div>
 
-                    <a><i class="material-icons" data-toggle="tooltip" title="Edit"  th:onclick="'javascript:showEdit(\'' + ${creditcard.id} + '\');'">&#xE254;</i></a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <!-- Edit Modal HTML -->
-       <div id="edit-block" >
-       </div>
+                    <div class="form-group">
+                        <a th:href="@{/longlink}">Test the alias</a>
+                    </div>
+
+            </form>
+
+
     </div>
 </div>
 
-<footer>
-    <div class="container">
-        <p>
-            <a th:href="@{/logout}">Sign Out</a>
 
-        </p>
-    </div>
-</footer>
+
 </body>
 
 </html>

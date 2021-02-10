@@ -4,17 +4,18 @@ package com.bankamerica.controller;
 import com.bankamerica.model.ShortLink;
 import com.bankamerica.service.ShortLinkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
+import java.net.URI;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -32,46 +33,48 @@ public class LinkController {
         }
         ShortLink shortLink = new ShortLink();
         shortLink.setAlias(service.convertToShortUrl(link.getUrl()));
-        System.out.println("alias" + shortLink.getAlias());
-        System.out.println("url" + shortLink.getUrl());
 
         model.addAttribute("link", link);
         model.addAttribute("alias_response", shortLink.getAlias());
-        return "link";
+        return "shortlink";
 
     }
 
 
-    @RequestMapping(value="/redirect/alias", method = RequestMethod.GET)
-    public void localRedirect(HttpServletResponse response, Model model, @ModelAttribute ShortLink link) throws IOException {
-
+    @RequestMapping(value="/shortlink/url", method = RequestMethod.GET)
+    public String localRedirect( Model model, @ModelAttribute ShortLink link)  {
 
         String url = service.getOriginalUrl(link.getAlias());
-        RedirectView redirectView = new RedirectView();
-        redirectView.setUrl(url);
-        System.out.println("url" + url);
-        response.sendRedirect(url);
+        model.addAttribute("url_response", url);
+        model.addAttribute("link", new ShortLink());
+        return "longlink";
+
     }
 
     @RequestMapping(value ="/shortlink", method = RequestMethod.GET )
     public String shortlink(Model model){
 
         model.addAttribute("link", new ShortLink());
-        return "link";
+        return "shortlink";
     }
 
-    @RequestMapping(value ="/redirect", method = RequestMethod.GET )
+    @RequestMapping(value ="/longlink", method = RequestMethod.GET )
     public String redirect(Model model){
-
         model.addAttribute("link", new ShortLink());
-        return "redirect";
+        return "longlink";
     }
 
 
     @RequestMapping(value ="/" )
     public String home() {
-
         return "redirect:/shortlink";
+    }
+
+
+    @RequestMapping(value="/{alias}", method = RequestMethod.GET)
+    public ModelAndView method(@PathVariable("alias") String alias) {
+        String url = service.getOriginalUrl(alias);
+        return new ModelAndView("redirect:" + url);
     }
 
 
