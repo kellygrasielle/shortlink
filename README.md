@@ -1,14 +1,12 @@
 SpringBoot Gradle MVC application with Thymeleaf
 
 ## Application
-The application has two screens
-1- The user inform the url or service and the system respond with the alias:
+The application has two screens:
+1- The user inform the url or service and the system respond with the alias.
 
-2- The user inform the alias and the system respond with the original service or path:
+2- The user inform the alias and the system respond with the original service or path.
 
-
-The user can test as well if the service is working using by using the url composed by application path plus the alias and
-he is redirect to the original path.
+- The user can test as well if the service is working using by using the url composed by application path plus the alias. 
  - {application_path}/alias
 
 ## Implementation
